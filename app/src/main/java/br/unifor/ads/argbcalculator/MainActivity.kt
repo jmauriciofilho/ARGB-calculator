@@ -4,9 +4,12 @@ import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
+import android.text.InputType
 import android.view.KeyEvent
 import android.view.View
 import android.widget.*
+import org.w3c.dom.Text
+import java.util.regex.Pattern
 
 class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.OnKeyListener, View.OnClickListener {
 
@@ -27,7 +30,7 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
     private lateinit var mRadioButtonARGB: RadioButton
     private lateinit var mRadioButtonHex: RadioButton
 
-    private lateinit var valueAlpha: String
+    private var valueAlpha: String = "0"
     private var valueRed: String = "0"
     private var valueGreen: String = "0"
     private var valueBlue: String = "0"
@@ -171,33 +174,98 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
 
             R.id.main_edittext_alpha ->{
                 if(event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER){
-                    var value = mEditTextAlpha.text.toString().toInt()
-                    if( value > 255) value = 255
-                    mSeekbarAlpha.progress = value
+                    var text = mEditTextAlpha.text.toString()
+                    if (isDecimal){
+                        var value = text.toInt()
+                        if( value > 255) value = 255
+                        mSeekbarAlpha.progress = value
+                    }else{
+                        val validator = Pattern.compile("[0-9A-Fa-f]{2}")
+                        val matcher = validator.matcher(text)
+                        if (matcher.matches()){
+                            var value = Integer.parseInt(text, 16)
+                            if( value > 255) value = 255
+                            mSeekbarAlpha.progress = value
+                        }else{
+                            val toast = Toast.makeText(this, "Formato inválido", Toast.LENGTH_LONG)
+                            toast.show()
+                            mSeekbarAlpha.progress = 0
+                            mEditTextAlpha.setText("")
+                        }
+                    }
+
                 }
             }
 
             R.id.main_edittext_red ->{
                 if(event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER){
-                    var value = mEditTextRed.text.toString().toInt()
-                    if( value > 255) value = 255
-                    mSeekbarRed.progress = value
+                    var text = mEditTextRed.text.toString()
+                    if (isDecimal){
+                        var value = text.toInt()
+                        if( value > 255) value = 255
+                        mSeekbarRed.progress = value
+                    }else{
+                        val validator = Pattern.compile("[0-9A-Fa-f]{2}")
+                        val matcher = validator.matcher(text)
+                        if (matcher.matches()){
+                            var value = Integer.parseInt(text, 16)
+                            if( value > 255) value = 255
+                            mSeekbarRed.progress = value
+                        }else{
+                            val toast = Toast.makeText(this, "Formato inválido", Toast.LENGTH_LONG)
+                            toast.show()
+                            mSeekbarRed.progress = 0
+                            mEditTextRed.setText("")
+                        }
+                    }
                 }
             }
 
             R.id.main_edittext_green ->{
                 if(event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER){
-                    var value = mEditTextGreen.text.toString().toInt()
-                    if( value > 255) value = 255
-                    mSeekbarGreen.progress = value
+                    var text = mEditTextGreen.text.toString()
+                    if (isDecimal){
+                        var value = text.toInt()
+                        if( value > 255) value = 255
+                        mSeekbarGreen.progress = value
+                    }else{
+                        val validator = Pattern.compile("[0-9A-Fa-f]{2}")
+                        val matcher = validator.matcher(text)
+                        if (matcher.matches()){
+                            var value = Integer.parseInt(text, 16)
+                            if( value > 255) value = 255
+                            mSeekbarGreen.progress = value
+                        }else{
+                            val toast = Toast.makeText(this, "Formato inválido", Toast.LENGTH_LONG)
+                            toast.show()
+                            mSeekbarGreen.progress = 0
+                            mEditTextGreen.setText("")
+                        }
+                    }
                 }
             }
 
             R.id.main_edittext_blue ->{
                 if(event.action == KeyEvent.ACTION_UP && keyCode == KeyEvent.KEYCODE_ENTER){
-                    var value = mEditTextBlue.text.toString().toInt()
-                    if( value > 255) value = 255
-                    mSeekbarBlue.progress = value
+                    var text = mEditTextBlue.text.toString()
+                    if (isDecimal){
+                        var value = text.toInt()
+                        if( value > 255) value = 255
+                        mSeekbarBlue.progress = value
+                    }else{
+                        val validator = Pattern.compile("[0-9A-Fa-f]{2}")
+                        val matcher = validator.matcher(text)
+                        if (matcher.matches()){
+                            var value = Integer.parseInt(text, 16)
+                            if( value > 255) value = 255
+                            mSeekbarBlue.progress = value
+                        }else{
+                            val toast = Toast.makeText(this, "Formato inválido", Toast.LENGTH_LONG)
+                            toast.show()
+                            mSeekbarBlue.progress = 0
+                            mEditTextBlue.setText("")
+                        }
+                    }
                 }
             }
 
@@ -215,11 +283,21 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
             R.id.radioButtonARGB -> {
                 mRadioButtonHex.isChecked = !mRadioButtonARGB.isChecked
                 isDecimal = mRadioButtonARGB.isChecked
+                val inputType = if (isDecimal) InputType.TYPE_CLASS_NUMBER else InputType.TYPE_CLASS_TEXT
+                mEditTextAlpha.inputType = inputType
+                mEditTextRed.inputType = inputType
+                mEditTextGreen.inputType = inputType
+                mEditTextBlue.inputType = inputType
             }
 
             R.id.radioButtonHex -> {
                 mRadioButtonARGB.isChecked = !mRadioButtonHex.isChecked
                 isDecimal = !mRadioButtonHex.isChecked
+                val inputType = if (isDecimal) InputType.TYPE_CLASS_NUMBER else InputType.TYPE_CLASS_TEXT
+                mEditTextAlpha.inputType = inputType
+                mEditTextRed.inputType = inputType
+                mEditTextGreen.inputType = inputType
+                mEditTextBlue.inputType = inputType
             }
 
         }

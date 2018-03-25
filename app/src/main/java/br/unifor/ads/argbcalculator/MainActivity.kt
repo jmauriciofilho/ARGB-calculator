@@ -1,5 +1,6 @@
 package br.unifor.ads.argbcalculator
 
+import android.annotation.SuppressLint
 import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
@@ -26,10 +27,12 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
     private lateinit var mRadioButtonARGB: RadioButton
     private lateinit var mRadioButtonHex: RadioButton
 
-    private var valueAlpha = ""
-    private var valueRed = ""
-    private var valueGreen = ""
-    private var valueBlue = ""
+    private lateinit var valueAlpha: String
+    private var valueRed: String = "0"
+    private var valueGreen: String = "0"
+    private var valueBlue: String = "0"
+
+    private var isDecimal: Boolean = true
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -86,7 +89,7 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
         mEditTextBlue.setText("0")
         mEditTextBlue.setOnKeyListener(this)
 
-        mTextViewValue.setText("0, 0, 0, 0")
+        mTextViewValue.text = "0, 0, 0, 0"
 
         mRadioButtonARGB.isChecked = true
         mRadioButtonARGB.setOnClickListener(this)
@@ -98,33 +101,60 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
 
     override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
 
-
         when(seekBar.id){
 
             R.id.main_seekbar_alpha -> {
-                mEditTextAlpha.setText(seekBar.progress.toString())
+
+                val alpha = if (isDecimal){
+                    seekBar.progress.toString()
+                }else{
+                    java.lang.Integer.toHexString(seekBar.progress)
+                }
+
+                mEditTextAlpha.setText(alpha)
                 valueAlpha = seekBar.progress.toString()
             }
 
             R.id.main_seekbar_red -> {
-                mEditTextRed.setText(seekBar.progress.toString())
+
+                val red = if (isDecimal){
+                    seekBar.progress.toString()
+                }else{
+                    java.lang.Integer.toHexString(seekBar.progress)
+                }
+
+                mEditTextRed.setText(red)
                 valueRed = seekBar.progress.toString()
             }
 
             R.id.main_seekbar_green -> {
-                mEditTextGreen.setText(seekBar.progress.toString())
+
+                val green = if (isDecimal){
+                    seekBar.progress.toString()
+                }else{
+                    java.lang.Integer.toHexString(seekBar.progress)
+                }
+
+                mEditTextGreen.setText(green)
                 valueGreen = seekBar.progress.toString()
             }
 
             R.id.main_seekbar_blue -> {
-                mEditTextBlue.setText(seekBar.progress.toString())
+
+                val blue = if (isDecimal){
+                    seekBar.progress.toString()
+                }else{
+                    java.lang.Integer.toHexString(seekBar.progress)
+                }
+
+                mEditTextBlue.setText(blue)
                 valueBlue = seekBar.progress.toString()
             }
 
         }
 
         updateColorView()
-        updateTextView(valueAlpha, valueRed, valueGreen, valueBlue)
+        updateTextView(valueAlpha, valueRed, valueGreen, valueBlue, isDecimal)
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {
@@ -183,9 +213,13 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
         when(v.id){
 
             R.id.radioButtonARGB -> {
-                if (mRadioButtonARGB.isChecked){
+                mRadioButtonHex.isChecked = !mRadioButtonARGB.isChecked
+                isDecimal = mRadioButtonARGB.isChecked
+            }
 
-                }
+            R.id.radioButtonHex -> {
+                mRadioButtonARGB.isChecked = !mRadioButtonHex.isChecked
+                isDecimal = !mRadioButtonHex.isChecked
             }
 
         }
@@ -197,8 +231,26 @@ class MainActivity : AppCompatActivity(), SeekBar.OnSeekBarChangeListener, View.
         mColorView.setBackgroundColor(color)
     }
 
-    private fun updateTextView(valueAlpha: String, valueRed: String, valueGrenn: String, valueBlue: String){
-        mTextViewValue.text = "$valueAlpha, $valueRed, $valueGrenn, $valueBlue"
+    private fun updateTextView(valueAlpha: String, valueRed: String, valueGrenn: String, valueBlue: String, isDecimal: Boolean){
+
+        val alpha: String
+        val red: String
+        val green: String
+        val blue: String
+
+        if (isDecimal){
+            alpha = java.lang.Integer.toHexString(valueAlpha.toInt())
+            red = java.lang.Integer.toHexString(valueRed.toInt())
+            green = java.lang.Integer.toHexString(valueGrenn.toInt())
+            blue = java.lang.Integer.toHexString(valueBlue.toInt())
+        }else{
+            alpha = java.lang.Integer.parseInt(valueAlpha).toString()
+            red = java.lang.Integer.parseInt(valueRed).toString()
+            green = java.lang.Integer.parseInt(valueGrenn).toString()
+            blue = java.lang.Integer.parseInt(valueBlue).toString()
+        }
+
+        mTextViewValue.text = "$alpha, $red, $green, $blue"
     }
 
 }
